@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"encoding/json"
@@ -10,21 +10,9 @@ import (
 	"github.com/codegangsta/negroni"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
 )
 
-func main() {
-
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	StartServer()
-
-}
-
-func StartServer() {
+func init() {
 	r := mux.NewRouter()
 
 	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
@@ -45,7 +33,6 @@ func StartServer() {
 		negroni.Wrap(http.HandlerFunc(SecuredPingHandler)),
 	))
 	http.Handle("/", r)
-	http.ListenAndServe(":3001", nil)
 }
 
 type Response struct {
